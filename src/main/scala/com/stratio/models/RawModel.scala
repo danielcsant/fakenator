@@ -16,13 +16,8 @@ case class RawModel (order_id: String,
                      credit_card: String,
                      shopping_center: String,
                      employee: Integer,
-                     total_amount: Float,
-                     lines: Seq[LineModel]) {}
+                     total_amount: Float) {}
 
-case class LineModel (product: String,
-                      family: String,
-                      quantity: Integer,
-                      price: Float)
 
 object RawModel {
 
@@ -42,16 +37,6 @@ object RawModel {
       (splitted(0), Map(splitted(1) -> splitted(2).toFloat))
     }).toMap
 
-  def generateLines(): Seq[LineModel] = {
-    (1 to generateRandomInt(1,MaxLines)).map(x => {
-      val family = Range_family_product.keySet.toSeq(generateRandomInt(0, Range_family_product.keySet.size - 1))
-      val product: String = Range_family_product.get(family)
-        .get.keySet.toSeq(generateRandomInt(0, Range_family_product.get(family).get.keySet.size - 1))
-      val price: Float = Range_family_product.get(family).get.get(product).get
-      val quantity = generateRandomInt(1, 30)
-      new LineModel(product, family, quantity, price)
-    })
-  }
 
   def generateShoppingCenter(): String = {
     Range_shopping_center(generateRandomInt(0, Range_shopping_center.length - 1))

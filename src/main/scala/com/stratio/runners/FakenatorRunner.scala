@@ -68,8 +68,7 @@ object FakenatorRunner {
     val shoppingCenter = RawModel.generateShoppingCenter()
     val employee = RawModel.generateRandomInt(1, 300)
 
-    val lines = RawModel.generateLines()
-    val totalAmount = lines.map(x => x.price * x.quantity).sum
+    val totalAmount = scala.util.Random.nextInt(250).toFloat*100/100
 
     val rawModel = new RawModel(
       id,
@@ -81,8 +80,8 @@ object FakenatorRunner {
       creditCard,
       shoppingCenter,
       employee,
-      totalAmount,
-      lines)
+      totalAmount
+      )
 
     println(write(rawModel))
     L.info(write(rawModel))
