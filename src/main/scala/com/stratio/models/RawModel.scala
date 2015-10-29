@@ -9,13 +9,13 @@ import scala.util.Random
 
 case class RawModel (order_id: String,
                      timestamp: String,
-                     client_id: Integer,
+                     client_id: Int,
                      latitude: Double,
                      longitude: Double,
                      payment_method: String,
                      credit_card: String,
                      shopping_center: String,
-                     employee: Integer,
+                     employee: Int,
                      total_amount: Float) {}
 
 

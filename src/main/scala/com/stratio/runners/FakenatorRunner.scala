@@ -2,7 +2,7 @@ package com.stratio.runners
 
 import java.util.UUID
 
-import com.stratio.models.{ConfigModel, RawModel}
+import com.stratio.models.{ConfigModel, RawModel, RawModels}
 import org.apache.log4j.Logger
 import org.json4s.native.Serialization._
 import org.json4s.{DefaultFormats, Formats}
@@ -10,10 +10,26 @@ import org.json4s.{DefaultFormats, Formats}
 import scala.annotation.tailrec
 import scala.io.Source
 
+import scala.slick.driver.MySQLDriver.simple._
+import scala.slick.lifted.TableQuery
+
 object FakenatorRunner {
 
   val DefaultFailureTimeout = 2000L
   val NumberOfClients = 1000
+
+  val rawModels = TableQuery[RawModels]
+
+  val db: Database = Database.forURL(
+    url = "jdbc:mysql://localhost:3306/test",
+    driver="com.mysql.jdbc.Driver",
+    user="root",
+    password="root"
+  )
+
+  db.withSession { implicit session =>
+    (rawModels.ddl).create
+  }
 
   implicit val formats: Formats = DefaultFormats
 
@@ -84,6 +100,22 @@ object FakenatorRunner {
       )
 
     println(write(rawModel))
+
+    db.withSession { implicit session =>
+      rawModels += (
+        rawModel.order_id,
+        rawModel.timestamp,
+        rawModel.client_id,
+        rawModel.latitude,
+        rawModel.longitude,
+        rawModel.payment_method,
+        rawModel.credit_card,
+        rawModel.shopping_center,
+        rawModel.employee,
+        rawModel.total_amount
+      )
+    }
+
     L.info(write(rawModel))
 
     if(count % config.rawSize == 0) {
