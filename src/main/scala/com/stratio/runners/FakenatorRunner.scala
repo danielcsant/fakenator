@@ -3,6 +3,7 @@ package com.stratio.runners
 import java.util.UUID
 
 import com.stratio.models.{ConfigModel, RawModel, RawModels}
+import com.typesafe.config.{ConfigFactory, Config}
 import org.apache.log4j.Logger
 import org.json4s.native.Serialization._
 import org.json4s.{DefaultFormats, Formats}
@@ -19,17 +20,23 @@ object FakenatorRunner {
   val NumberOfClients = 1000
 
   val rawModels = TableQuery[RawModels]
+  var conf: Config= ConfigFactory.load()
 
   val db: Database = Database.forURL(
-    url = "jdbc:mysql://localhost:3306/test",
-    driver="com.mysql.jdbc.Driver",
-    user="root",
-    password="root"
+    url = "jdbc:mysql://" + conf.getString("db.host") + "/" + conf.getString("db.database"),
+    driver= conf.getString("db.driver"),
+    user= conf.getString("db.user"),
+    password= conf.getString("db.password")
   )
 
-  db.withSession { implicit session =>
-    (rawModels.ddl).create
+  try {
+    db.withSession { implicit session =>
+      (rawModels.ddl).create
+    }
+  } catch {
+    case e: Exception => println("exception caught: " + e);
   }
+
 
   implicit val formats: Formats = DefaultFormats
 
