@@ -6,6 +6,7 @@ import com.stratio.models.{ConfigModel, RawModel}
 import org.apache.log4j.Logger
 import org.json4s.native.Serialization._
 import org.json4s.{DefaultFormats, Formats}
+import com.stratio.sinks.KafkaSink
 
 import scala.annotation.tailrec
 import scala.io.Source
@@ -21,7 +22,8 @@ object FakenatorRunner {
   val clientIdCreditCard: Map[Int, String] = generateClientIdCreditCard((1 to NumberOfClients).toSeq, Map())
   val clientIdGeo: Map[Int, (Double, Double)] = generateClientIdGeo(clientIdCreditCard, geolocations)
 
-  val L = Logger.getLogger(FakenatorRunner.getClass)
+//  val L = Logger.getLogger(FakenatorRunner.getClass)
+  val sink = KafkaSink("stratio_streaming_data")
 
   val alertMessage = """
                       0: For the same client_id more than one order in less than 5 minutes with the same credit card in
@@ -85,7 +87,7 @@ object FakenatorRunner {
       lines)
 
     println(write(rawModel))
-    L.info(write(rawModel))
+    sink.write(write(rawModel))
 
     if(count % config.rawSize == 0) {
       Thread.sleep(config.rawTimeout)
