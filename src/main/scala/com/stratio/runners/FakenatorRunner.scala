@@ -13,7 +13,7 @@ object FakenatorRunner {
 
   val stratioStreamingAPI = StratioStreamingAPIFactory
     .create
-    .withServerConfig("ip-172-31-3-208",9092, "ip-172-31-3-208", 2181)
+    .withServerConfig("172.17.0.5",9092, "172.17.0.4", 2181)
     .init
 
   val streamName = "chustas"
