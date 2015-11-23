@@ -23,7 +23,7 @@ case class KafkaSink(topic: String) extends Sink {
     val props: Properties = new Properties();
 
     //    props.put("metadata.broker.list", "broker1:9092,broker2:9092")
-    props.put("metadata.broker.list", "localhost:9092")
+    props.put("metadata.broker.list", "54.169.226.120:9092")
     props.put("serializer.class", "kafka.serializer.StringEncoder")
 //    props.put("partitioner.class", "example.producer.SimplePartitioner")
     props.put("request.required.acks", "1")

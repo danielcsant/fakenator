@@ -2,7 +2,7 @@ package com.stratio.runners
 
 import java.util.UUID
 
-import com.stratio.models.{ConfigModel, RawModel}
+import com.stratio.models.{IngestionModel, ConfigModel, RawModel}
 import org.apache.log4j.Logger
 import org.json4s.native.Serialization._
 import org.json4s.{DefaultFormats, Formats}
@@ -73,18 +73,13 @@ object FakenatorRunner {
     val lines = RawModel.generateLines()
     val totalAmount = lines.map(x => x.price * x.quantity).sum
 
-    val rawModel = new RawModel(
+    val columns = IngestionModel
+      .generateColumns(clientId, timestamp, latitude, longitude, paymentMethod, creditCard, shoppingCenter, employee, totalAmount, lines)
+
+    val rawModel = new IngestionModel(
       id,
       timestamp,
-      clientId,
-      latitude,
-      longitude,
-      paymentMethod,
-      creditCard,
-      shoppingCenter,
-      employee,
-      totalAmount,
-      lines)
+      columns)
 
     println(write(rawModel))
     sink.write(write(rawModel))
